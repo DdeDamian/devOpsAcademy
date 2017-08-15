@@ -24,4 +24,4 @@ RUN apt-get install -y ansible
 ADD ansible-php /tmp/ansible-php/
 
 # Run ansible to provision php server
-CMD "ansible-playbook" "/tmp/ansible-php/php.yml"
+RUN ansible-playbook /tmp/ansible-php/php.yml -i /tmp/ansible-php/hosts
