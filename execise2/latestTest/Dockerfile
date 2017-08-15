@@ -13,11 +13,15 @@ MAINTAINER damian.velazquez@globant.com
 RUN apt-get update && apt-get upgrade -y
 
 # Install useful packages
-RUN apt-get install -y vim ssh htop curl software-properties-common
+RUN apt-get install -y vim sudo ssh htop curl software-properties-common
 
 # Start ansible resources installation
 RUN apt-add-repository ppa:ansible/ansible -y
 RUN apt-get update
 RUN apt-get install -y ansible
 
+# Copy all ansible files to deploy
+ADD ansible-php /tmp/ansible-php/
 
+# Run ansible to provision php server
+CMD "ansible-playbook" "/tmp/ansible-php/php.yml"

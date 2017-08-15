@@ -18,6 +18,8 @@
       - php7.0-mcrypt
       - php7.0-sqlite3
       - sqlite3
+      - php-mbstring
+      - php7.0-xml
 
   - name: install setfacl support
     become: yes
