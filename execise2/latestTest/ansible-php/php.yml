@@ -1,6 +1,6 @@
 ---
 - hosts: php
-#  sudo: yes
+  sudo: yes
 
   tasks:
 
@@ -29,6 +29,27 @@
     shell: phpenmod mcrypt
     args:
       creates: /etc/php7.0/cli/conf.d/20-mcrypt.ini
+
+  - name: create /var/www/ directory
+    file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
+
+  - name: Clone git repository
+    git: >
+      dest=/var/www/laravel
+      repo=https://github.com/laravel/laravel.git
+      update=no
+    sudo: yes
+    sudo_user: www-data
+
+  - name: install composer
+    shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    args:
+      creates: /usr/local/bin/composer
+
+  - name: composer create-project
+    composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
+    sudo: yes
+    sudo_user: www-data
 
   handlers:
     - name: restart php7.0-fpm
