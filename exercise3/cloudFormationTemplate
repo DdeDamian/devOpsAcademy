@@ -74,7 +74,7 @@ Resources:
           - !Ref InstanceType
           - Arch
       InstanceType: !Ref InstanceType
-      KeyName: damian.velazquez
+      KeyName: damian.velazquez.key
       BlockDeviceMappings:
         - DeviceName: /dev/sdm
           Ebs:
@@ -159,9 +159,12 @@ Resources:
     Type: 'AWS::EC2::EIP'
     Properties:
       InstanceId: !Ref JenkinsServer
+      Domain: vpc
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 83295e41-df5a-46cf-916c-e9dc3498e151
+    DependsOn:
+      - JenkinsVPCGatewayAttachment
   JenkinsSubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
@@ -178,7 +181,7 @@ Metadata:
         height: 60
       position:
         x: 300
-        'y': 330
+        'y': 340
       z: 1
       embeds: []
     850fe839-fada-4610-a424-7282bdbde7ac:
@@ -227,7 +230,7 @@ Metadata:
         width: 120
         height: 130
       position:
-        x: 90
+        x: 70
         'y': 150
       z: 2
       parent: 850fe839-fada-4610-a424-7282bdbde7ac
@@ -238,7 +241,7 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 10
+        x: 0
         'y': 190
       z: 2
       parent: 850fe839-fada-4610-a424-7282bdbde7ac
@@ -248,7 +251,7 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 120
+        x: 100
         'y': 190
       z: 3
       parent: 138f3f99-0770-499d-8c1d-a686e0aaf7af
@@ -262,15 +265,23 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 120
-        'y': 330
+        x: 100
+        'y': 320
       z: 1
       embeds: []
       isassociatedwith:
         - d0ec1a83-bf02-4fc4-95bd-c58abca7bf4b
+      dependson:
+        - bf3a6b18-4e14-472d-ae1c-54d5feaf8646
     8b8cb929-285c-4e2e-b054-4fa39bf49808:
       source:
         id: 8e1b8631-5c98-4506-8e8f-ac1f9f75c1bb
       target:
         id: 138f3f99-0770-499d-8c1d-a686e0aaf7af
       z: 2
+    5135b18e-346d-459f-b29d-d9f8343e57e7:
+      source:
+        id: 83295e41-df5a-46cf-916c-e9dc3498e151
+      target:
+        id: bf3a6b18-4e14-472d-ae1c-54d5feaf8646
+      z: 4
