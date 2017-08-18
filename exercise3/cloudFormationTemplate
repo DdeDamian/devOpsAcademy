@@ -32,6 +32,9 @@ Resources:
   JenkinsServer:
     Type: 'AWS::EC2::Instance'
     Properties:
+      Tags:
+        - Key: Name
+          Value: DamianJenkinsServerStack_Instance
       NetworkInterfaces:
         - GroupSet:
             - !Ref JenkinsSG
@@ -42,17 +45,27 @@ Resources:
       UserData:
         'Fn::Base64': !Sub >
           #!/bin/bash
-          apt-get update
-          apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
+
+          apt-get update apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
+          
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
           add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          apt-get update
-          apt-get install -y docker-ce
-          groupadd docker
+
+          apt-get update 
+
+          apt-get install -y docker-ce 
+
+          groupadd docker 
+
           gpasswd -a ubuntu docker
-          mkdir /home/ubuntu/jenkins
-          chmod 777 /home/ubuntu/jenkins
-          docker run -d -p 80:8080 -v /home/ubuntu/jenkins:/var/jenkins_home -t jenkins/jenkins
+
+          mkdir $PWD/jenkins 
+
+          chmod 777 $PWD/jenkins
+
+          docker run -d -p 80:8080 -v $PWD/jenkins:/var/jenkins_home -t jenkins/jenkins
+          
       ImageId: !FindInMap 
         - AWSRegionArch2AMI
         - !Ref 'AWS::Region'
@@ -77,6 +90,9 @@ Resources:
   JenkinsSG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
+      Tags:
+        - Key: Name
+          Value: DamianJenkinsServerStack_SG
       VpcId: !Ref JenkinsVPC
       GroupDescription: Enable HTTP access via port 80
       SecurityGroupIngress:
@@ -98,6 +114,8 @@ Resources:
       Tags:
         - Key: Application
           Value: !Ref 'AWS::StackId'
+        - Key: Name
+          Value: DamianJenkinsServerStack_VPC
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 850fe839-fada-4610-a424-7282bdbde7ac
@@ -131,6 +149,8 @@ Resources:
       Tags:
         - Key: Application
           Value: !Ref 'AWS::StackId'
+        - Key: Name
+          Value: DamianJenkinsServerStack_IG
     Metadata:
       'AWS::CloudFormation::Designer':
         id: dc990aa0-2af2-4377-afe7-0f163bc3ea77
@@ -168,16 +188,16 @@ Metadata:
         height: 60
       position:
         x: 300
-        'y': 340
+        'y': 650
       z: 1
       embeds: []
     850fe839-fada-4610-a424-7282bdbde7ac:
       size:
-        width: 430
-        height: 220
+        width: 370
+        height: 190
       position:
-        x: -10
-        'y': 90
+        x: 60
+        'y': 420
       z: 1
       embeds:
         - 8e1b8631-5c98-4506-8e8f-ac1f9f75c1bb
@@ -191,11 +211,11 @@ Metadata:
       z: 1
     8e1b8631-5c98-4506-8e8f-ac1f9f75c1bb:
       size:
-        width: 130
+        width: 140
         height: 130
       position:
         x: 260
-        'y': 150
+        'y': 450
       z: 2
       parent: 850fe839-fada-4610-a424-7282bdbde7ac
       embeds:
@@ -206,7 +226,7 @@ Metadata:
         height: 60
       position:
         x: 300
-        'y': 190
+        'y': 490
       z: 3
       parent: 8e1b8631-5c98-4506-8e8f-ac1f9f75c1bb
       embeds: []
@@ -214,11 +234,11 @@ Metadata:
         - dc990aa0-2af2-4377-afe7-0f163bc3ea77
     138f3f99-0770-499d-8c1d-a686e0aaf7af:
       size:
-        width: 120
-        height: 130
+        width: 130
+        height: 110
       position:
-        x: 70
-        'y': 150
+        x: 80
+        'y': 460
       z: 2
       parent: 850fe839-fada-4610-a424-7282bdbde7ac
       embeds:
@@ -228,9 +248,9 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 0
-        'y': 190
-      z: 2
+        x: -40
+        'y': 490
+      z: 0
       parent: 850fe839-fada-4610-a424-7282bdbde7ac
       embeds: []
     d0ec1a83-bf02-4fc4-95bd-c58abca7bf4b:
@@ -238,8 +258,8 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 100
-        'y': 190
+        x: 120
+        'y': 490
       z: 3
       parent: 138f3f99-0770-499d-8c1d-a686e0aaf7af
       embeds: []
@@ -252,8 +272,8 @@ Metadata:
         width: 60
         height: 60
       position:
-        x: 100
-        'y': 320
+        x: 120
+        'y': 650
       z: 1
       embeds: []
       isassociatedwith:
