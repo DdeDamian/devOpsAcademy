@@ -128,17 +128,17 @@ Resources:
           groupadd docker 
           gpasswd -a ubuntu docker
           #Docker requirements, instalation and config
-          apt-get install -y php5-cli
+          apt-get install -y php7.0-cli php7.0-mbstring php7.0-xml
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-          #Project creation
+          #Project creation and configuration
           mkdir $PWD/laravelProject 
           git clone https://github.com/DdeDamian/LaravelLinksTest.git $PWD/laravelProject
           composer clear-cache -d $PWD/laravelProject
           composer update --no-scripts -d $PWD/laravelProject
+          cp $PWD/laravelProject/.env.example $PWD/laravelProject/.env
+          
           chmod 777 -R $PWD/laravelProject
-
           docker pull laraedit/laraedit
-
           docker run -p 80:80 -v $PWD/laravelProject:/var/www/html/app laraedit/laraedit
       ImageId: !FindInMap 
         - AWSRegionArch2AMI
