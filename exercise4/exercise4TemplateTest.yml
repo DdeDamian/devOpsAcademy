@@ -118,49 +118,65 @@ Resources:
         'Fn::Base64': !Sub >
           #!/bin/bash
 
+          touch /tmp/startUpScript.log
+
           #Update system 
 
-          apt-get update && apt-get upgrade -y
+          apt-get update | tee -a /tmp/startUpScript.log
+
+          apt-get upgrade -y | tee -a /tmp/startUpScript.log
 
           #Docker requirements, instalation and config 
 
-          apt-get install -y git linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
+          apt-get install -y git linux-image-extra-$(uname -r)
+          linux-image-extra-virtual apt-transport-https ca-certificates curl
+          software-properties-common | tee -a /tmp/startUpScript.log
 
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - 
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add
+          - | tee -a /tmp/startUpScript.log
 
-          add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          
-          apt-get update
+          add-apt-repository "deb [arch=amd64]
+          https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee -a /tmp/startUpScript.log
 
-          apt-get install -y docker-ce  
+          apt-get update | tee -a /tmp/startUpScript.log
 
-          groupadd docker
+          apt-get install -y docker-ce | tee -a /tmp/startUpScript.log
 
-          gpasswd -a ubuntu docker 
+          groupadd docker | tee -a /tmp/startUpScript.log
+
+          gpasswd -a ubuntu docker | tee -a /tmp/startUpScript.log
 
           #Docker requirements, instalation and config 
 
-          apt-get install -y zip unzip php7.0-cli php7.0-mbstring php7.0-xml
+          apt-get install -y zip unzip php7.0-cli php7.0-mbstring php7.0-xml |
+          tee -a /tmp/startUpScript.log
 
-          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer 
+          curl -sS https://getcomposer.org/installer | php --
+          --install-dir=/usr/local/bin --filename=composer | tee -a
+          /tmp/startUpScript.log
 
           #Project creation and configuration
 
-          mkdir $PWD/laravelProject
-          
-          git clone https://github.com/DdeDamian/LaravelLinksTest.git $PWD/laravelProject
+          mkdir $PWD/laravelProject | tee -a /tmp/startUpScript.log
 
-          composer clear-cache -d $PWD/laravelProject
+          git clone https://github.com/DdeDamian/LaravelLinksTest.git
+          $PWD/laravelProject | tee -a /tmp/startUpScript.log
 
-          composer update --no-scripts -d $PWD/laravelProject
+          composer clear-cache -d $PWD/laravelProject | tee -a
+          /tmp/startUpScript.log
 
-          cp $PWD/laravelProject/.env.example $PWD/laravelProject/.env
+          composer update --no-scripts -d $PWD/laravelProject | tee -a
+          /tmp/startUpScript.log
 
-          chmod 777 -R $PWD/laravelProject 
+          cp $PWD/laravelProject/.env.example $PWD/laravelProject/.env | tee -a
+          /tmp/startUpScript.log
 
-          docker pull laraedit/laraedit 
+          chmod 777 -R $PWD/laravelProject | tee -a /tmp/startUpScript.log
 
-          docker run -p 80:80 -v $PWD/laravelProject:/var/www/html/app laraedit/laraedit
+          docker pull laraedit/laraedit  | tee -a /tmp/startUpScript.log
+
+          docker run -p 80:80 -v $PWD/laravelProject:/var/www/html/app
+          laraedit/laraedit | tee -a /tmp/startUpScript.log
       ImageId: !FindInMap 
         - AWSRegionArch2AMI
         - !Ref 'AWS::Region'
