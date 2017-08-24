@@ -117,28 +117,49 @@ Resources:
       UserData:
         'Fn::Base64': !Sub >
           #!/bin/bash
-          #Update system
+
+          #Update system 
+
           apt-get update && apt-get upgrade -y
-          #Docker requirements, instalation and config
+
+          #Docker requirements, instalation and config 
+
           apt-get install -y git linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates curl software-properties-common
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - 
+
           add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          apt-get update 
-          apt-get install -y docker-ce 
-          groupadd docker 
-          gpasswd -a ubuntu docker
-          #Docker requirements, instalation and config
-          apt-get install -y php7.0-cli php7.0-mbstring php7.0-xml
-          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-          #Project creation and configuration
-          mkdir $PWD/laravelProject 
-          git clone https://github.com/DdeDamian/LaravelLinksTest.git $PWD/laravelProject
-          composer clear-cache -d $PWD/laravelProject
-          composer update --no-scripts -d $PWD/laravelProject
-          cp $PWD/laravelProject/.env.example $PWD/laravelProject/.env
           
-          chmod 777 -R $PWD/laravelProject
-          docker pull laraedit/laraedit
+          apt-get update
+
+          apt-get install -y docker-ce  
+
+          groupadd docker
+
+          gpasswd -a ubuntu docker 
+
+          #Docker requirements, instalation and config 
+
+          apt-get install -y zip unzip php7.0-cli php7.0-mbstring php7.0-xml
+
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer 
+
+          #Project creation and configuration
+
+          mkdir $PWD/laravelProject
+          
+          git clone https://github.com/DdeDamian/LaravelLinksTest.git $PWD/laravelProject
+
+          composer clear-cache -d $PWD/laravelProject
+
+          composer update --no-scripts -d $PWD/laravelProject
+
+          cp $PWD/laravelProject/.env.example $PWD/laravelProject/.env
+
+          chmod 777 -R $PWD/laravelProject 
+
+          docker pull laraedit/laraedit 
+
           docker run -p 80:80 -v $PWD/laravelProject:/var/www/html/app laraedit/laraedit
       ImageId: !FindInMap 
         - AWSRegionArch2AMI
